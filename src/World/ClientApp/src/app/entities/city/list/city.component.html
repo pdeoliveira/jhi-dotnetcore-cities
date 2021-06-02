@@ -1,0 +1,193 @@
+<div>
+  <h2 id="page-heading" data-cy="CityHeading">
+    <span jhiTranslate="worldApp.city.home.title">Cities</span>
+
+    <div class="d-flex justify-content-end">
+      <button
+        class="btn btn-info mr-2"
+        (click)="refresh()"
+        [disabled]="isLoading"
+      >
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="worldApp.city.home.refreshListLabel"
+          >Refresh List</span
+        >
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-city"
+        [routerLink]="['/city/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="worldApp.city.home.createLabel">
+          Create a new City
+        </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="cities?.length === 0">
+    <span jhiTranslate="worldApp.city.home.notFound">No cities found</span>
+  </div>
+
+  <div
+    class="table-responsive"
+    id="entities"
+    *ngIf="cities && cities.length > 0"
+  >
+    <p-table [value]="cities" [lazy]="true" (onLazyLoad)="loadCities($event)" [loading]="isLoading"
+        [paginator]="true" [rows]="itemsPerPage" [totalRecords]="totalRecords">
+      <ng-template pTemplate="header">
+        <tr>
+          <th><span jhiTranslate="worldApp.city.name">Name</span> <p-columnFilter type="text" field="city.name" display="menu"></p-columnFilter></th>
+          <th><span jhiTranslate="worldApp.city.countryCode">Country Code</span> <p-columnFilter type="text" field="city.countryCode" display="menu"></p-columnFilter></th>
+          <th><span jhiTranslate="worldApp.city.district">District</span> <p-columnFilter type="text" field="city.district" display="menu"></p-columnFilter></th>
+          <th><span jhiTranslate="worldApp.city.population">Population</span> <p-columnFilter type="numeric" field="city.population" display="menu"></p-columnFilter></th>
+          <th scope="col"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-city>
+        <tr>
+          <td><a [routerLink]="['/city', city.id, 'view']">{{ city.name }}</a></td>
+          <td>{{ city.countryCode }}</td>
+          <td>{{ city.district }}</td>
+          <td>{{ city.population }}</td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/city', city.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span
+                  class="d-none d-md-inline"
+                  jhiTranslate="entity.action.view"
+                  >View</span
+                >
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/city', city.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span
+                  class="d-none d-md-inline"
+                  jhiTranslate="entity.action.edit"
+                  >Edit</span
+                >
+              </button>
+
+              <button
+                type="submit"
+                (click)="delete(city)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
+                <fa-icon icon="times"></fa-icon>
+                <span
+                  class="d-none d-md-inline"
+                  jhiTranslate="entity.action.delete"
+                  >Delete</span
+                >
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- <div
+    class="table-responsive"
+    id="entities"
+    *ngIf="cities && cities.length > 0"
+  >
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col">
+            <span jhiTranslate="worldApp.city.name">Name</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="worldApp.city.countryCode">Country Code</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="worldApp.city.district">District</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="worldApp.city.population">Population</span>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let city of cities; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/city', city.id, 'view']">{{ city.id }}</a>
+          </td>
+          <td>{{ city.name }}</td>
+          <td>{{ city.countryCode }}</td>
+          <td>{{ city.district }}</td>
+          <td>{{ city.population }}</td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/city', city.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span
+                  class="d-none d-md-inline"
+                  jhiTranslate="entity.action.view"
+                  >View</span
+                >
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/city', city.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span
+                  class="d-none d-md-inline"
+                  jhiTranslate="entity.action.edit"
+                  >Edit</span
+                >
+              </button>
+
+              <button
+                type="submit"
+                (click)="delete(city)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
+                <fa-icon icon="times"></fa-icon>
+                <span
+                  class="d-none d-md-inline"
+                  jhiTranslate="entity.action.delete"
+                  >Delete</span
+                >
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div> -->
+</div>

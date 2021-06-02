@@ -1,0 +1,7 @@
+{
+  "generator-jhipster-dotnetcore:3.0.1": {
+    "promptValues": {
+      "nativeLanguage": "pt-br"
+    }
+  }
+}

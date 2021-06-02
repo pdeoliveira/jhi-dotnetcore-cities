@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <RootNamespace>company.world.Infrastructure</RootNamespace>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection"  />
+        <PackageReference Include="Serilog"  />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"  />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"  />
+        <PackageReference Include="Microsoft.EntityFrameworkCore"  />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"  />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\World.Domain\World.Domain.csproj" />
+        <ProjectReference Include="..\World.Dto\World.Dto.csproj" />
+        <ProjectReference Include="..\World.Crosscutting\World.Crosscutting.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,27 @@
+{
+  "worldApp": {
+    "city": {
+      "home": {
+        "title": "Cities",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo City",
+        "createOrEditLabel": "Criar ou editar City",
+        "notFound": "Nenhum City encontrado"
+      },
+      "created": "Um novo City foi criado com o identificador {{ param }}",
+      "updated": "Um City foi atualizado com o identificador {{ param }}",
+      "deleted": "Um City foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir City {{ id }}?"
+      },
+      "detail": {
+        "title": "City"
+      },
+      "id": "ID",
+      "name": "Name",
+      "countryCode": "Country Code",
+      "district": "District",
+      "population": "Population"
+    }
+  }
+}

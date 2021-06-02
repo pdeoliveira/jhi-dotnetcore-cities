@@ -1,0 +1,8 @@
+entity City {
+    name String required
+    countryCode String required
+    district String required
+    population Integer required
+}
+
+use serviceClass, pagination for *

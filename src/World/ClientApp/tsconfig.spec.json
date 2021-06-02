@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "outDir": "target/out-tsc/spec",
+    "types": ["jest", "node"]
+  },
+  "files": ["src/World/ClientApp/src/polyfills.ts"],
+  "include": [
+    "src/World/ClientApp/src/**/*.spec.ts",
+    "src/World/ClientApp/src/**/*.d.ts"
+  ]
+}

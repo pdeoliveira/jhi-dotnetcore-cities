@@ -1,0 +1,55 @@
+{
+  "generator-jhipster": {
+    "blueprints": [
+      {
+        "name": "generator-jhipster-dotnetcore",
+        "version": "3.0.1"
+      }
+    ],
+    "otherModules": [
+      {
+        "name": "generator-jhipster-dotnetcore",
+        "version": "3.0.1"
+      }
+    ],
+    "baseName": "world",
+    "namespace": "company.world",
+    "applicationType": "monolith",
+    "jhipsterVersion": "7.0.1",
+    "skipClient": false,
+    "skipServer": false,
+    "skipUserManagement": false,
+    "skipCheckLengthOfIdentifier": false,
+    "skipFakeData": false,
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "testFrameworks": [],
+    "pages": [],
+    "creationTimestamp": 1620670460678,
+    "databaseType": "mssql",
+    "authenticationType": "jwt",
+    "serverPort": "5000",
+    "withTerraformAzureScripts": false,
+    "clientFramework": "angularX",
+    "clientTheme": "none",
+    "enableTranslation": true,
+    "nativeLanguage": "pt-br",
+    "clientPackageManager": "npm",
+    "clientThemeVariant": "",
+    "withAdminUi": true,
+    "languages": ["pt-br", "en"],
+    "packageName": "com.mycompany.myapp",
+    "cacheProvider": "ehcache",
+    "websocket": false,
+    "prodDatabaseType": "mysql",
+    "devDatabaseType": "h2Disk",
+    "searchEngine": false,
+    "buildTool": "maven",
+    "serviceDiscoveryType": false,
+    "enableHibernateCache": true,
+    "reactive": false,
+    "entities": ["City"],
+    "lastLiquibaseTimestamp": 1620685822000
+  }
+}
