@@ -76,12 +76,7 @@ namespace company.world.Controllers
             _log.LogDebug($"REST request to get a page of Cities : {loadEvent}");
             if(loadEvent != null && loadEvent != "undefined") {
                 LazyLoadEvent _loadEvent = JsonConvert.DeserializeObject<LazyLoadEvent>(loadEvent);
-                // Expression<Func<City, bool>> expression = null;
                 if(_loadEvent != null && _loadEvent.filters != null && _loadEvent.filters.Count > 0) {
-                    // expression = city => city.Name.StartsWith((string)_loadEvent.filters["city.name"][0]["value"]);
-                    // var filterResult = await _cityRepository.QueryHelper()
-                    //     .Filter(expression)
-                    //     .GetPageAsync(pageable);
                     LazyLoading<City> lazyLoading = new LazyLoading<City>(_loadEvent);
                     Expression<Func<City, bool>> expression = lazyLoading.ExpressionFromFilters();
                     IPage<City> filterResult;
@@ -91,7 +86,7 @@ namespace company.world.Controllers
                     }
                     else {
                         filterResult = await _cityRepository.QueryHelper()
-                            .Filter(lazyLoading.ExpressionFromFilters())
+                            .Filter(expression)
                             .GetPageAsync(pageable);
                     }
                     return Ok(filterResult.Content).WithHeaders(filterResult.GeneratePaginationHttpHeaders());
@@ -103,10 +98,22 @@ namespace company.world.Controllers
         }
 
         // [HttpGet]
-        // public async Task<ActionResult<IEnumerable<City>>> GetAllCities([FromQuery] LazyLoadEvent loadEvent, IPageable pageable)
+        // public async Task<ActionResult<IEnumerable<City>>> GetAllCities([FromQuery] string loadEvent, IPageable pageable)
         // {
-        //     _log.LogDebug(">>> REST request to get a page of Cities");
-        //     _log.LogDebug(">>>>> loadEvent " + loadEvent.ToString());
+        //     _log.LogDebug($"REST request to get a page of Cities : {loadEvent}");
+        //     if(loadEvent != null && loadEvent != "undefined") {
+        //         LazyLoadEvent _loadEvent = JsonConvert.DeserializeObject<LazyLoadEvent>(loadEvent);
+        //         if(_loadEvent != null && _loadEvent.filters != null && _loadEvent.filters.Count > 0) {
+        //             Type t = typeof(int?);
+        //             Type u = Nullable.GetUnderlyingType(t);
+        //             int? nullableIntValue = (int?)Convert.ChangeType(_loadEvent.filters["city.population"][0]["value"], u);
+        //             Expression<Func<City, bool>> expression = city => city.Population == nullableIntValue;
+        //             var filterResult = await _cityRepository.QueryHelper()
+        //                 .Filter(expression)
+        //                 .GetPageAsync(pageable);
+        //             return Ok(filterResult.Content).WithHeaders(filterResult.GeneratePaginationHttpHeaders());
+        //         }
+        //     }
         //     var result = await _cityRepository.QueryHelper()
         //         .GetPageAsync(pageable);
         //     return Ok(result.Content).WithHeaders(result.GeneratePaginationHttpHeaders());
