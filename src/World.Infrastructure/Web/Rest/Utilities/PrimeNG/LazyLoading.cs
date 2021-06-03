@@ -12,12 +12,12 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
         
         enum NumericFilters
         {
-            Equals,
-            NotEquals,
+            Equal,
+            NotEqual,
             LessThan,
-            LessThanOrEqualTo,
+            LessThanOrEqual,
             GreaterThan,
-            GreaterThanOrEqualTo
+            GreaterThanOrEqual
         };
 
         private Dictionary<string, string> stringMethods = new Dictionary<string, string>()
@@ -32,7 +32,12 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             
         private Dictionary<string, NumericFilters> numericFilters = new Dictionary<string, NumericFilters>()
         {
-            { "equals", NumericFilters.Equals },
+            { "equals", NumericFilters.Equal },
+            { "notEquals", NumericFilters.NotEqual },
+            { "lt", NumericFilters.LessThan },
+            { "lte", NumericFilters.LessThanOrEqual },
+            { "gt", NumericFilters.GreaterThan },
+            { "gte", NumericFilters.GreaterThanOrEqual }
         };
 
         public LazyLoading(LazyLoadEvent loadEvent) {
@@ -57,8 +62,11 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                         var value = filter.Value[i]["value"];
                         var filterOperator = (string)filter.Value[i]["operator"];
                         if(value != null) {                        
-                            if(int.TryParse(value.ToString(), out int n)) { // int value
-                                this.SetExpression(Convert.ToInt32(value), NumericFilters.Equals, expressionProperty, filterOperator);
+                            if(int.TryParse(value.ToString(), out int intValue)) { // int value
+                                this.SetExpression(intValue, typeof(Nullable<int>), numericFilters[matchMode], expressionProperty, filterOperator);
+                            }
+                            else if(double.TryParse(value.ToString(), out double doubleValue)) { // int value
+                                this.SetExpression(doubleValue, typeof(Nullable<float>), numericFilters[matchMode], expressionProperty, filterOperator);
                             }
                             else { // string value
                                 this.SetExpression((string)value, stringMethods[matchMode], expressionProperty, filterOperator);
@@ -90,10 +98,29 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             this.SetExpressionAfterOperator(expressionClause, filterOperator);
         }
 
-        private void SetExpression(int value, NumericFilters filter, MemberExpression expressionProperty, string filterOperator) {
-            Expression expressionClause = null;
-            if(filter == NumericFilters.Equals) {
-                expressionClause = Expression.Equal(expressionProperty, Expression.Convert(Expression.Constant(value), typeof(Nullable<int>)));
+        private void SetExpression(object value, Type type, NumericFilters filter, MemberExpression expressionProperty, string filterOperator) {
+            Expression expressionClause = Expression.Convert(Expression.Constant(value), type);
+            switch(filter) {
+                case NumericFilters.Equal:
+                    expressionClause = Expression.Equal(expressionProperty, expressionClause);
+                    break;
+                case NumericFilters.NotEqual:
+                    expressionClause = Expression.NotEqual(expressionProperty, expressionClause);
+                    break;
+                case NumericFilters.LessThan:
+                    expressionClause = Expression.LessThan(expressionProperty, expressionClause);
+                    break;
+                case NumericFilters.LessThanOrEqual:
+                    expressionClause = Expression.LessThanOrEqual(expressionProperty, expressionClause);
+                    break;
+                case NumericFilters.GreaterThan:
+                    expressionClause = Expression.GreaterThan(expressionProperty, expressionClause);
+                    break;
+                case NumericFilters.GreaterThanOrEqual:
+                    expressionClause = Expression.GreaterThanOrEqual(expressionProperty, expressionClause);
+                    break;
+                default:
+                    throw new InvalidFilterCriteriaException();
             }
             this.SetExpressionAfterOperator(expressionClause, filterOperator);
         }
