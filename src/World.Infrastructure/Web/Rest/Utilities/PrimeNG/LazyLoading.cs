@@ -9,6 +9,31 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
 
         private LazyLoadEvent loadEvent;
         private Expression expression;
+        
+        enum NumericFilters
+        {
+            Equals,
+            NotEquals,
+            LessThan,
+            LessThanOrEqualTo,
+            GreaterThan,
+            GreaterThanOrEqualTo
+        };
+
+        private Dictionary<string, string> stringMethods = new Dictionary<string, string>()
+        {
+            { "startsWith", "StartsWith" },
+            { "contains", "Contains" },
+            { "notContains", "notContains" },
+            { "endsWith", "EndsWith" },
+            { "equals", "Equals" },
+            { "notEquals", "notEquals" }
+        };
+            
+        private Dictionary<string, NumericFilters> numericFilters = new Dictionary<string, NumericFilters>()
+        {
+            { "equals", NumericFilters.Equals },
+        };
 
         public LazyLoading(LazyLoadEvent loadEvent) {
             this.loadEvent = loadEvent;
@@ -31,28 +56,13 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                         var matchMode = (string)filter.Value[i]["matchMode"];
                         var value = filter.Value[i]["value"];
                         var filterOperator = (string)filter.Value[i]["operator"];
-                        if(matchMode == "startsWith" && value != null) {
-                            this.SetExpressionFromFilterByMethod("StartsWith", property, (string)value, expressionProperty, filterOperator);
-                        }
-                        if(matchMode == "contains" && value != null) {
-                            this.SetExpressionFromFilterByMethod("Contains", property, (string)value, expressionProperty, filterOperator);
-                        }
-                        if(matchMode == "notContains" && value != null) {
-                            this.SetExpressionFromFilterByMethod("notContains", property, (string)value, expressionProperty, filterOperator);
-                        }
-                        if(matchMode == "endsWith" && value != null) {
-                            this.SetExpressionFromFilterByMethod("EndsWith", property, (string)value, expressionProperty, filterOperator);
-                        }
-                        if(matchMode == "equals" && value != null) {
-                            if(int.TryParse(value.ToString(), out int n)) {
-                                this.SetExpressionFromFilterEqual(expressionProperty, Convert.ToInt32(value), filterOperator);
+                        if(value != null) {                        
+                            if(int.TryParse(value.ToString(), out int n)) { // int value
+                                this.SetExpression(Convert.ToInt32(value), NumericFilters.Equals, expressionProperty, filterOperator);
                             }
-                            else {
-                                this.SetExpressionFromFilterByMethod("Equals", property, (string)value, expressionProperty, filterOperator);
+                            else { // string value
+                                this.SetExpression((string)value, stringMethods[matchMode], expressionProperty, filterOperator);
                             }
-                        }
-                        if(matchMode == "notEquals" && value != null) {
-                            this.SetExpressionFromFilterByMethod("notEquals", property, (string)value, expressionProperty, filterOperator);
                         }
                     }
                 }
@@ -62,12 +72,12 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             return null;
         }
 
-        private void SetExpressionFromFilterByMethod(string method, string property, string value, MemberExpression expressionProperty, string filterOperator) {
+        private void SetExpression(string value, string method, MemberExpression expressionProperty, string filterOperator) {
             bool isNot = method.StartsWith("not");
             if(isNot) { // notContains to Contains
                 method = method.Substring(3);
             }
-            PropertyInfo propertyInfo = typeof(TEntity).GetProperty(property);
+            PropertyInfo propertyInfo = typeof(TEntity).GetProperty(expressionProperty.Member.Name);
             ConstantExpression c = Expression.Constant(value, typeof(string));
             MethodInfo mi = typeof(string).GetMethod(method, new Type[] { typeof(string) });
             Expression expressionClause;
@@ -80,8 +90,11 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             this.SetExpressionAfterOperator(expressionClause, filterOperator);
         }
 
-        private void SetExpressionFromFilterEqual(MemberExpression expressionProperty, int value, string filterOperator) {
-            var expressionClause = Expression.Equal(expressionProperty, Expression.Convert(Expression.Constant(value), typeof(Nullable<int>)));
+        private void SetExpression(int value, NumericFilters filter, MemberExpression expressionProperty, string filterOperator) {
+            Expression expressionClause = null;
+            if(filter == NumericFilters.Equals) {
+                expressionClause = Expression.Equal(expressionProperty, Expression.Convert(Expression.Constant(value), typeof(Nullable<int>)));
+            }
             this.SetExpressionAfterOperator(expressionClause, filterOperator);
         }
 
