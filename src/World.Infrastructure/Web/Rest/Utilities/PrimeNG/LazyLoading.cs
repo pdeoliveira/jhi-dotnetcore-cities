@@ -66,7 +66,7 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                                 this.SetExpression(intValue, typeof(Nullable<int>), numericFilters[matchMode], expressionProperty, filterOperator);
                             }
                             else if(double.TryParse(value.ToString(), out double doubleValue)) { // int value
-                                this.SetExpression(doubleValue, typeof(Nullable<float>), numericFilters[matchMode], expressionProperty, filterOperator);
+                                this.SetExpression(doubleValue, typeof(Nullable<double>), numericFilters[matchMode], expressionProperty, filterOperator);
                             }
                             else { // string value
                                 this.SetExpression((string)value, stringMethods[matchMode], expressionProperty, filterOperator);
