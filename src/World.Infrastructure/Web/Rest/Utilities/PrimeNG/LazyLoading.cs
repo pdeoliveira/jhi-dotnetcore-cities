@@ -55,7 +55,7 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             if(this.loadEvent != null && this.loadEvent.filters != null && this.loadEvent.filters.Count > 0) {
                 var filters = loadEvent.filters;
                 foreach(KeyValuePair<string, List<Dictionary<string, Object>>> filter in filters) {
-                    var property = filter.Key.Split(".")[1];
+                    var property = filter.Key.Contains(".") ? filter.Key.Split(".")[1] : filter.Key;
                     var expressionProperty = Expression.Property(expressionInputParameter, property);
                     for(var i = 0; i < filter.Value.Count; i++) {
                         var matchMode = (string)filter.Value[i]["matchMode"];
