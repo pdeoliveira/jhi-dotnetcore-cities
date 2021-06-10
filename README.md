@@ -69,6 +69,17 @@ will generate few files:
     create World/ClientApp/src/app/my-component/my-component.component.ts
     update World/ClientApp/src/app/app.module.ts
 
+### Creating the database
+
+You need to create the database before the first test/run:
+
+```
+% sqlcmd -S <sqlserver_host> -U sa -P '<sa_password>'
+1> create database world;
+2> go
+1> quit
+```
+
 ## Building for production
 
 To build the artifacts and optimize the world application for production, run:
