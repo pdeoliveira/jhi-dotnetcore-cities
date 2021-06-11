@@ -69,7 +69,7 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                                 this.SetExpression(doubleValue, typeof(Nullable<double>), numericFilters[matchMode], expressionProperty, filterOperator);
                             }
                             else if(bool.TryParse(value.ToString(), out bool boolValue)) { // bool value
-                                this.SetExpression(boolValue, typeof(bool), "Equals", expressionProperty, filterOperator);
+                                this.SetExpression(boolValue, typeof(System.Object), "Equals", expressionProperty, filterOperator);
                             }
                             else { // string value
                                 this.SetExpression((string)value, typeof(string), stringMethods[matchMode], expressionProperty, filterOperator);
@@ -89,7 +89,6 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                 method = method.Substring(3);
             }
             PropertyInfo propertyInfo = typeof(TEntity).GetProperty(expressionProperty.Member.Name);
-            if(type == typeof(bool)) type = typeof(System.Object); // method 'Boolean Equals(System.Object)'
             ConstantExpression c = Expression.Constant(value, type);
             MethodInfo mi = type.GetMethod(method, new Type[] { typeof(string) });
             Expression expressionClause;
