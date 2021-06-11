@@ -68,8 +68,11 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                             else if(double.TryParse(value.ToString(), out double doubleValue)) { // int value
                                 this.SetExpression(doubleValue, typeof(Nullable<double>), numericFilters[matchMode], expressionProperty, filterOperator);
                             }
+                            else if(bool.TryParse(value.ToString(), out bool boolValue)) { // bool value
+                                this.SetExpression(boolValue, typeof(bool), "Equals", expressionProperty, filterOperator);
+                            }
                             else { // string value
-                                this.SetExpression((string)value, stringMethods[matchMode], expressionProperty, filterOperator);
+                                this.SetExpression((string)value, typeof(string), stringMethods[matchMode], expressionProperty, filterOperator);
                             }
                         }
                     }
@@ -80,14 +83,15 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             return null;
         }
 
-        private void SetExpression(string value, string method, MemberExpression expressionProperty, string filterOperator) {
+        private void SetExpression(object value, Type type, string method, MemberExpression expressionProperty, string filterOperator) {
             bool isNot = method.StartsWith("not");
             if(isNot) { // notContains to Contains
                 method = method.Substring(3);
             }
             PropertyInfo propertyInfo = typeof(TEntity).GetProperty(expressionProperty.Member.Name);
-            ConstantExpression c = Expression.Constant(value, typeof(string));
-            MethodInfo mi = typeof(string).GetMethod(method, new Type[] { typeof(string) });
+            if(type == typeof(bool)) type = typeof(System.Object); // method 'Boolean Equals(System.Object)'
+            ConstantExpression c = Expression.Constant(value, type);
+            MethodInfo mi = type.GetMethod(method, new Type[] { typeof(string) });
             Expression expressionClause;
             if(isNot) {
                 expressionClause = Expression.Not(Expression.Call(expressionProperty, mi, c));
