@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import * as dayjs from "dayjs";
 
 import { isPresent } from "app/core/util/operators";
 import { ApplicationConfigService } from "app/core/config/application-config.service";
@@ -22,39 +24,49 @@ export class CityService {
   ) {}
 
   create(city: ICity): Observable<EntityResponseType> {
-    return this.http.post<ICity>(this.resourceUrl, city, {
-      observe: "response",
-    });
+    const copy = this.convertDateFromClient(city);
+    return this.http
+      .post<ICity>(this.resourceUrl, copy, { observe: "response" })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   update(city: ICity): Observable<EntityResponseType> {
-    return this.http.put<ICity>(
-      `${this.resourceUrl}/${getCityIdentifier(city) as number}`,
-      city,
-      { observe: "response" }
-    );
+    const copy = this.convertDateFromClient(city);
+    return this.http
+      .put<ICity>(
+        `${this.resourceUrl}/${getCityIdentifier(city) as number}`,
+        copy,
+        { observe: "response" }
+      )
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   partialUpdate(city: ICity): Observable<EntityResponseType> {
-    return this.http.patch<ICity>(
-      `${this.resourceUrl}/${getCityIdentifier(city) as number}`,
-      city,
-      { observe: "response" }
-    );
+    const copy = this.convertDateFromClient(city);
+    return this.http
+      .patch<ICity>(
+        `${this.resourceUrl}/${getCityIdentifier(city) as number}`,
+        copy,
+        { observe: "response" }
+      )
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<ICity>(`${this.resourceUrl}/${id}`, {
-      observe: "response",
-    });
+    return this.http
+      .get<ICity>(`${this.resourceUrl}/${id}`, { observe: "response" })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<ICity[]>(this.resourceUrl, {
-      params: options,
-      observe: "response",
-    });
+    return this.http
+      .get<ICity[]>(this.resourceUrl, { params: options, observe: "response" })
+      .pipe(
+        map((res: EntityArrayResponseType) =>
+          this.convertDateArrayFromServer(res)
+        )
+      );
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
@@ -86,5 +98,35 @@ export class CityService {
       return [...citiesToAdd, ...cityCollection];
     }
     return cityCollection;
+  }
+
+  protected convertDateFromClient(city: ICity): ICity {
+    return Object.assign({}, city, {
+      lastVisited: city.lastVisited?.isValid()
+        ? city.lastVisited.toJSON()
+        : undefined,
+    });
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.lastVisited = res.body.lastVisited
+        ? dayjs(res.body.lastVisited)
+        : undefined;
+    }
+    return res;
+  }
+
+  protected convertDateArrayFromServer(
+    res: EntityArrayResponseType
+  ): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((city: ICity) => {
+        city.lastVisited = city.lastVisited
+          ? dayjs(city.lastVisited)
+          : undefined;
+      });
+    }
+    return res;
   }
 }

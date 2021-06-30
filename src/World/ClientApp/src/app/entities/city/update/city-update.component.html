@@ -169,6 +169,84 @@
             </small>
           </div>
         </div>
+
+        <div class="form-group">
+          <label
+            class="form-control-label"
+            jhiTranslate="worldApp.city.isFavorite"
+            for="field_isFavorite"
+            >Is Favorite</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isFavorite"
+            id="field_isFavorite"
+            data-cy="isFavorite"
+            formControlName="isFavorite"
+          />
+        </div>
+
+        <div class="form-group">
+          <label
+            class="form-control-label"
+            jhiTranslate="worldApp.city.lastVisited"
+            for="field_lastVisited"
+            >Last Visited</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_lastVisited"
+              data-cy="lastVisited"
+              type="datetime-local"
+              class="form-control"
+              name="lastVisited"
+              formControlName="lastVisited"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label
+            class="form-control-label"
+            jhiTranslate="worldApp.city.continent"
+            for="field_continent"
+            >Continent</label
+          >
+          <select
+            class="form-control"
+            name="continent"
+            formControlName="continent"
+            id="field_continent"
+            data-cy="continent"
+          >
+            <option [ngValue]="null">
+              {{ "worldApp.Continents.null" | translate }}
+            </option>
+            <option value="NORTHAMERICA">
+              {{ "worldApp.Continents.NORTHAMERICA" | translate }}
+            </option>
+            <option value="SOUTHAMERICA">
+              {{ "worldApp.Continents.SOUTHAMERICA" | translate }}
+            </option>
+            <option value="EUROPE">
+              {{ "worldApp.Continents.EUROPE" | translate }}
+            </option>
+            <option value="AFRICA">
+              {{ "worldApp.Continents.AFRICA" | translate }}
+            </option>
+            <option value="ASIA">
+              {{ "worldApp.Continents.ASIA" | translate }}
+            </option>
+            <option value="AUSTRALIA">
+              {{ "worldApp.Continents.AUSTRALIA" | translate }}
+            </option>
+            <option value="ANTARCTICA">
+              {{ "worldApp.Continents.ANTARCTICA" | translate }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div>

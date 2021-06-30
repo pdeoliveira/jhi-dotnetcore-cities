@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using company.world.Crosscutting.Enums;
 
 namespace company.world.Domain
 {
@@ -20,6 +21,9 @@ namespace company.world.Domain
         public string District { get; set; }
         [Required]
         public int? Population { get; set; }
+        public bool? IsFavorite { get; set; }
+        public DateTime LastVisited { get; set; }
+        public Continents Continent { get; set; }
 
         // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
 
@@ -45,6 +49,9 @@ namespace company.world.Domain
                     $", CountryCode='{CountryCode}'" +
                     $", District='{District}'" +
                     $", Population='{Population}'" +
+                    $", IsFavorite='{IsFavorite}'" +
+                    $", LastVisited='{LastVisited}'" +
+                    $", Continent='{Continent}'" +
                     "}";
         }
     }

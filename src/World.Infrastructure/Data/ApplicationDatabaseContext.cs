@@ -1,5 +1,6 @@
 using company.world.Domain;
 using company.world.Domain.Interfaces;
+using company.world.Crosscutting.Enums;
 using System;
 using System.Linq;
 using System.Threading;
@@ -65,6 +66,9 @@ namespace company.world.Infrastructure.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<City>()
+                .Property(e => e.Continent)
+                .HasConversion<string>();
         }
 
         /// <summary>

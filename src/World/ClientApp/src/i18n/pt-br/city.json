@@ -21,7 +21,10 @@
       "name": "Name",
       "countryCode": "Country Code",
       "district": "District",
-      "population": "Population"
+      "population": "Population",
+      "isFavorite": "Is Favorite",
+      "lastVisited": "Last Visited",
+      "continent": "Continent"
     }
   }
 }

@@ -40,6 +40,14 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             { "gte", NumericFilters.GreaterThanOrEqual }
         };
 
+        private Dictionary<string, NumericFilters> dateFilters = new Dictionary<string, NumericFilters>()
+        {
+            { "dateIs", NumericFilters.Equal },
+            { "dateIsNot", NumericFilters.NotEqual },
+            { "dateBefore", NumericFilters.LessThan },
+            { "dateAfter", NumericFilters.GreaterThan }
+        };
+
         public LazyLoading(LazyLoadEvent loadEvent) {
             this.loadEvent = loadEvent;
         }
@@ -61,8 +69,13 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                         var matchMode = (string)filter.Value[i]["matchMode"];
                         var value = filter.Value[i]["value"];
                         var filterOperator = (string)filter.Value[i]["operator"];
-                        if(value != null) {                        
-                            if(int.TryParse(value.ToString(), out int intValue)) { // int value
+                        if(value != null) { 
+                            if(this.loadEvent.enums != null 
+                                    && this.loadEvent.enums.ContainsKey(property) 
+                                    && Enum.TryParse(this.loadEvent.enums[property], value.ToString(), out object enumValue)) {
+                                this.SetExpression(enumValue, this.loadEvent.enums[property], numericFilters[matchMode], expressionProperty, filterOperator);
+                            }
+                            else if(int.TryParse(value.ToString(), out int intValue)) { // int value
                                 this.SetExpression(intValue, typeof(Nullable<int>), numericFilters[matchMode], expressionProperty, filterOperator);
                             }
                             else if(double.TryParse(value.ToString(), out double doubleValue)) { // int value
@@ -70,6 +83,9 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
                             }
                             else if(bool.TryParse(value.ToString(), out bool boolValue)) { // bool value
                                 this.SetExpression(boolValue, typeof(System.Object), "Equals", expressionProperty, filterOperator);
+                            }
+                            else if(DateTime.TryParse(value.ToString(), out DateTime dateValue)) { // DateTime value
+                                this.SetExpression(dateValue, typeof(DateTime), dateFilters[matchMode], expressionProperty, filterOperator);
                             }
                             else { // string value
                                 this.SetExpression((string)value, typeof(string), stringMethods[matchMode], expressionProperty, filterOperator);
@@ -88,6 +104,9 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
             if(isNot) { // notContains to Contains
                 method = method.Substring(3);
             }
+            // if(type == typeof(bool)) { //method 'Boolean Equals(System.Object)'
+            //     type = typeof(System.Object);
+            // }
             PropertyInfo propertyInfo = typeof(TEntity).GetProperty(expressionProperty.Member.Name);
             ConstantExpression c = Expression.Constant(value, type);
             MethodInfo mi = type.GetMethod(method, new Type[] { typeof(string) });

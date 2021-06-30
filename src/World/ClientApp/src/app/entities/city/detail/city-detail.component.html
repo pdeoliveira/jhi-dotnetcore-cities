@@ -34,6 +34,24 @@
         <dd>
           <span>{{ city.population }}</span>
         </dd>
+        <dt>
+          <span jhiTranslate="worldApp.city.isFavorite">Is Favorite</span>
+        </dt>
+        <dd>
+          <span>{{ city.isFavorite }}</span>
+        </dd>
+        <dt>
+          <span jhiTranslate="worldApp.city.lastVisited">Last Visited</span>
+        </dt>
+        <dd>
+          <span>{{ city.lastVisited | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span jhiTranslate="worldApp.city.continent">Continent</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'worldApp.Continents.' + city.continent }}">{{
+            city.continent
+          }}</span>
+        </dd>
       </dl>
 
       <button

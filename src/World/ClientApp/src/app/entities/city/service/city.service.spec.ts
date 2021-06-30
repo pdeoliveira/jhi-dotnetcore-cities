@@ -3,7 +3,10 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing";
+import * as dayjs from "dayjs";
 
+import { DATE_TIME_FORMAT } from "app/config/input.constants";
+import { Continents } from "app/entities/enumerations/continents.model";
 import { ICity, City } from "../city.model";
 
 import { CityService } from "./city.service";
@@ -14,6 +17,7 @@ describe("Service Tests", () => {
     let httpMock: HttpTestingController;
     let elemDefault: ICity;
     let expectedResult: ICity | ICity[] | boolean | null;
+    let currentDate: dayjs.Dayjs;
 
     beforeEach(() => {
       TestBed.configureTestingModule({
@@ -22,6 +26,7 @@ describe("Service Tests", () => {
       expectedResult = null;
       service = TestBed.inject(CityService);
       httpMock = TestBed.inject(HttpTestingController);
+      currentDate = dayjs();
 
       elemDefault = {
         id: 0,
@@ -29,12 +34,20 @@ describe("Service Tests", () => {
         countryCode: "AAAAAAA",
         district: "AAAAAAA",
         population: 0,
+        isFavorite: false,
+        lastVisited: currentDate,
+        continent: Continents.NORTHAMERICA,
       };
     });
 
     describe("Service methods", () => {
       it("should find an element", () => {
-        const returnedFromService = Object.assign({}, elemDefault);
+        const returnedFromService = Object.assign(
+          {
+            lastVisited: currentDate.format(DATE_TIME_FORMAT),
+          },
+          elemDefault
+        );
 
         service.find(123).subscribe((resp) => (expectedResult = resp.body));
 
@@ -47,11 +60,17 @@ describe("Service Tests", () => {
         const returnedFromService = Object.assign(
           {
             id: 0,
+            lastVisited: currentDate.format(DATE_TIME_FORMAT),
           },
           elemDefault
         );
 
-        const expected = Object.assign({}, returnedFromService);
+        const expected = Object.assign(
+          {
+            lastVisited: currentDate,
+          },
+          returnedFromService
+        );
 
         service
           .create(new City())
@@ -70,11 +89,19 @@ describe("Service Tests", () => {
             countryCode: "BBBBBB",
             district: "BBBBBB",
             population: 1,
+            isFavorite: true,
+            lastVisited: currentDate.format(DATE_TIME_FORMAT),
+            continent: "BBBBBB",
           },
           elemDefault
         );
 
-        const expected = Object.assign({}, returnedFromService);
+        const expected = Object.assign(
+          {
+            lastVisited: currentDate,
+          },
+          returnedFromService
+        );
 
         service
           .update(expected)
@@ -89,13 +116,20 @@ describe("Service Tests", () => {
         const patchObject = Object.assign(
           {
             population: 1,
+            isFavorite: true,
+            lastVisited: currentDate.format(DATE_TIME_FORMAT),
           },
           new City()
         );
 
         const returnedFromService = Object.assign(patchObject, elemDefault);
 
-        const expected = Object.assign({}, returnedFromService);
+        const expected = Object.assign(
+          {
+            lastVisited: currentDate,
+          },
+          returnedFromService
+        );
 
         service
           .partialUpdate(patchObject)
@@ -114,11 +148,19 @@ describe("Service Tests", () => {
             countryCode: "BBBBBB",
             district: "BBBBBB",
             population: 1,
+            isFavorite: true,
+            lastVisited: currentDate.format(DATE_TIME_FORMAT),
+            continent: "BBBBBB",
           },
           elemDefault
         );
 
-        const expected = Object.assign({}, returnedFromService);
+        const expected = Object.assign(
+          {
+            lastVisited: currentDate,
+          },
+          returnedFromService
+        );
 
         service.query().subscribe((resp) => (expectedResult = resp.body));
 
@@ -171,7 +213,7 @@ describe("Service Tests", () => {
         });
 
         it("should add only unique City to an array", () => {
-          const cityArray: ICity[] = [{ id: 123 }, { id: 456 }, { id: 71215 }];
+          const cityArray: ICity[] = [{ id: 123 }, { id: 456 }, { id: 14407 }];
           const cityCollection: ICity[] = [{ id: 123 }];
           expectedResult = service.addCityToCollectionIfMissing(
             cityCollection,

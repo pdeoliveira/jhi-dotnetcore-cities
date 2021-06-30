@@ -1,3 +1,4 @@
+using System;
 
 using System.Linq;
 using System.Net;
@@ -7,6 +8,7 @@ using FluentAssertions;
 using company.world.Infrastructure.Data;
 using company.world.Domain;
 using company.world.Domain.Repositories.Interfaces;
+using company.world.Crosscutting.Enums;
 using company.world.Test.Setup;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -39,6 +41,15 @@ namespace company.world.Test.Controllers
         private static readonly int? DefaultPopulation = 1;
         private static readonly int? UpdatedPopulation = 2;
 
+        private static readonly bool? DefaultIsFavorite = false;
+        private static readonly bool? UpdatedIsFavorite = true;
+
+        private static readonly DateTime DefaultLastVisited = DateTime.UnixEpoch;
+        private static readonly DateTime UpdatedLastVisited = DateTime.Now;
+
+        private const Continents DefaultContinent = Continents.SOUTHAMERICA (South America);
+        private const Continents UpdatedContinent = Continents.SOUTHAMERICA (South America);
+
         private readonly AppWebApplicationFactory<TestStartup> _factory;
         private readonly HttpClient _client;
         private readonly ICityRepository _cityRepository;
@@ -53,7 +64,10 @@ namespace company.world.Test.Controllers
                 Name = DefaultName,
                 CountryCode = DefaultCountryCode,
                 District = DefaultDistrict,
-                Population = DefaultPopulation
+                Population = DefaultPopulation,
+                IsFavorite = DefaultIsFavorite,
+                LastVisited = DefaultLastVisited,
+                Continent = DefaultContinent
             };
         }
 
@@ -79,6 +93,9 @@ namespace company.world.Test.Controllers
             testCity.CountryCode.Should().Be(DefaultCountryCode);
             testCity.District.Should().Be(DefaultDistrict);
             testCity.Population.Should().Be(DefaultPopulation);
+            testCity.IsFavorite.Should().Be(DefaultIsFavorite);
+            testCity.LastVisited.Should().Be(DefaultLastVisited);
+            testCity.Continent.Should().Be(DefaultContinent);
         }
 
         [Fact]
@@ -179,6 +196,9 @@ namespace company.world.Test.Controllers
             json.SelectTokens("$.[*].countryCode").Should().Contain(DefaultCountryCode);
             json.SelectTokens("$.[*].district").Should().Contain(DefaultDistrict);
             json.SelectTokens("$.[*].population").Should().Contain(DefaultPopulation);
+            json.SelectTokens("$.[*].isFavorite").Should().Contain(DefaultIsFavorite);
+            json.SelectTokens("$.[*].lastVisited").Should().Contain(DefaultLastVisited);
+            json.SelectTokens("$.[*].continent").Should().Contain(DefaultContinent.ToString());
         }
 
         [Fact]
@@ -198,6 +218,9 @@ namespace company.world.Test.Controllers
             json.SelectTokens("$.countryCode").Should().Contain(DefaultCountryCode);
             json.SelectTokens("$.district").Should().Contain(DefaultDistrict);
             json.SelectTokens("$.population").Should().Contain(DefaultPopulation);
+            json.SelectTokens("$.isFavorite").Should().Contain(DefaultIsFavorite);
+            json.SelectTokens("$.lastVisited").Should().Contain(DefaultLastVisited);
+            json.SelectTokens("$.continent").Should().Contain(DefaultContinent.ToString());
         }
 
         [Fact]
@@ -223,6 +246,9 @@ namespace company.world.Test.Controllers
             updatedCity.CountryCode = UpdatedCountryCode;
             updatedCity.District = UpdatedDistrict;
             updatedCity.Population = UpdatedPopulation;
+            updatedCity.IsFavorite = UpdatedIsFavorite;
+            updatedCity.LastVisited = UpdatedLastVisited;
+            updatedCity.Continent = UpdatedContinent;
 
             var response = await _client.PutAsync($"/api/cities/{_city.Id}", TestUtil.ToJsonContent(updatedCity));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -235,6 +261,9 @@ namespace company.world.Test.Controllers
             testCity.CountryCode.Should().Be(UpdatedCountryCode);
             testCity.District.Should().Be(UpdatedDistrict);
             testCity.Population.Should().Be(UpdatedPopulation);
+            testCity.IsFavorite.Should().Be(UpdatedIsFavorite);
+            testCity.LastVisited.Should().Be(UpdatedLastVisited);
+            testCity.Continent.Should().Be(UpdatedContinent);
         }
 
         [Fact]

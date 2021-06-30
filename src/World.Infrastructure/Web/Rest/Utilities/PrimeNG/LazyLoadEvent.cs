@@ -70,6 +70,11 @@ namespace company.world.Web.Rest.Utilities.PrimeNG.LazyLoading
         /// <returns>
         /// A formatted string of the object's values.
         /// </returns>
+        /// <summary>
+        /// A dictionary of enums.
+        /// Key of the dictionary is the field name, TEnum is value.
+        /// </summary>
+        public Dictionary<string, Type> enums { get; set; }
         public override string ToString()
         {
             StringBuilder _return = new StringBuilder("record:[");

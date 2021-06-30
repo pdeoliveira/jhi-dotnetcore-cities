@@ -5,6 +5,9 @@ import { ActivatedRoute } from "@angular/router";
 import { Observable } from "rxjs";
 import { finalize } from "rxjs/operators";
 
+import * as dayjs from "dayjs";
+import { DATE_TIME_FORMAT } from "app/config/input.constants";
+
 import { ICity, City } from "../city.model";
 import { CityService } from "../service/city.service";
 
@@ -21,6 +24,9 @@ export class CityUpdateComponent implements OnInit {
     countryCode: [null, [Validators.required]],
     district: [null, [Validators.required]],
     population: [null, [Validators.required]],
+    isFavorite: [],
+    lastVisited: [],
+    continent: [],
   });
 
   constructor(
@@ -31,6 +37,11 @@ export class CityUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ city }) => {
+      if (city.id === undefined) {
+        const today = dayjs().startOf("day");
+        city.lastVisited = today;
+      }
+
       this.updateForm(city);
     });
   }
@@ -77,6 +88,11 @@ export class CityUpdateComponent implements OnInit {
       countryCode: city.countryCode,
       district: city.district,
       population: city.population,
+      isFavorite: city.isFavorite,
+      lastVisited: city.lastVisited
+        ? city.lastVisited.format(DATE_TIME_FORMAT)
+        : null,
+      continent: city.continent,
     });
   }
 
@@ -88,6 +104,11 @@ export class CityUpdateComponent implements OnInit {
       countryCode: this.editForm.get(["countryCode"])!.value,
       district: this.editForm.get(["district"])!.value,
       population: this.editForm.get(["population"])!.value,
+      isFavorite: this.editForm.get(["isFavorite"])!.value,
+      lastVisited: this.editForm.get(["lastVisited"])!.value
+        ? dayjs(this.editForm.get(["lastVisited"])!.value, DATE_TIME_FORMAT)
+        : undefined,
+      continent: this.editForm.get(["continent"])!.value,
     };
   }
 }

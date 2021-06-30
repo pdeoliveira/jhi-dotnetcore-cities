@@ -49,6 +49,9 @@
           <th><span jhiTranslate="worldApp.city.countryCode">Country Code</span> <p-columnFilter type="text" field="city.countryCode" display="menu"></p-columnFilter></th>
           <th><span jhiTranslate="worldApp.city.district">District</span> <p-columnFilter type="text" field="city.district" display="menu"></p-columnFilter></th>
           <th><span jhiTranslate="worldApp.city.population">Population</span> <p-columnFilter type="numeric" field="city.population" display="menu"></p-columnFilter></th>
+          <th><span jhiTranslate="worldApp.city.isFavorite">Favorite</span> <p-columnFilter type="boolean" field="city.isFavorite" display="menu"></p-columnFilter></th>
+          <th><span jhiTranslate="worldApp.city.lastVisited">Last Visited</span> <p-columnFilter type="date" field="city.lastVisited" display="menu"></p-columnFilter></th>
+          <th><span jhiTranslate="worldApp.city.continent">Continent</span> <p-columnFilter type="text" field="city.continent" display="menu" matchMode="equals"></p-columnFilter></th>
           <th scope="col"></th>
         </tr>
       </ng-template>
@@ -58,6 +61,9 @@
           <td>{{ city.countryCode }}</td>
           <td>{{ city.district }}</td>
           <td>{{ city.population }}</td>
+          <td>{{ city.isFavorite }}</td>
+          <td>{{ city.lastVisited }}</td>
+          <td>{{ city.continent }}</td>
           <td class="text-right">
             <div class="btn-group">
               <button

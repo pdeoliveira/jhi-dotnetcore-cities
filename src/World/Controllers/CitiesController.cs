@@ -77,6 +77,8 @@ namespace company.world.Controllers
             if(loadEvent != null && loadEvent != "undefined") {
                 LazyLoadEvent _loadEvent = JsonConvert.DeserializeObject<LazyLoadEvent>(loadEvent);
                 if(_loadEvent != null && _loadEvent.filters != null && _loadEvent.filters.Count > 0) {
+                    _loadEvent.enums = new Dictionary<string, Type>();
+                    _loadEvent.enums.Add("continent", typeof(company.world.Crosscutting.Enums.Continents));
                     LazyLoading<City> lazyLoading = new LazyLoading<City>(_loadEvent);
                     Expression<Func<City, bool>> expression = lazyLoading.ExpressionFromFilters();
                     IPage<City> filterResult;
