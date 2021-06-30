@@ -3,6 +3,20 @@ entity City {
     countryCode String required
     district String required
     population Integer required
+    isFavorite Boolean
+    lastVisited Date
+    continent Continents
 }
 
-use serviceClass, pagination for *
+enum Continents {
+    NORTHAMERICA ("North America"),
+    SOUTHAMERICA ("South America"),
+    EUROPE (Europe),
+    AFRICA (Africa),
+    ASIA (Asia),
+    AUSTRALIA (Australia),
+    ANTARCTICA (Antarctica)
+}
+
+paginate City with pagination
+service City with serviceClass
